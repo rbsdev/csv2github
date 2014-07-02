@@ -15,6 +15,7 @@ Sample of task file
 You can create the list of taks using Google Docs and then export to
 a CSV file. 
 Sample:
+![Alt text](https://raw.githubusercontent.com/rbsdev/csv2github/master/sample/googledocs_sample.png "Sample GoogleDocs")
 
 Note that here we create user stories with subtasks, all of which will
 be issues in your repository with different tags. 
