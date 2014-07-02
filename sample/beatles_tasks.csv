@@ -1,0 +1,9 @@
+,US,Number,Tasks,JOHN,PAUL,RINGO,GEORGE
+,,,,,,,
+,US,1,Improvements in the user interface,,,,
+,,1.1,- Make things much prettier,2,2,10,1
+,,1.2,- Change icons to high resolution ones,,,10,1
+,,,,,,,
+,US,2,Performance improvements,,,,
+,,2.1,- See what the profiler indicate as bottlenecks,,,7,
+,,2.2,- Run in multiples cores,,10,,
