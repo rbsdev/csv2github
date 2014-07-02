@@ -1,5 +1,6 @@
-csv2github - Conversion from Google Docs (CSV files) spreadsheet to Github issues
+csv2github 
 ==========
+Conversion from Google Docs (CSV files) spreadsheet to Github issues
 
 This project is simple collection of scripts to convert a list of tasks 
 (with hours assigned to persons) to Github issues. 
