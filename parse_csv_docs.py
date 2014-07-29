@@ -19,10 +19,12 @@ def unicode_csv_reader(utf8_data, dialect=csv.excel, **kwargs):
 
 
 class Issue:
-	def __init__(self, snumber, issue_name, people, hours):
+	def __init__(self, repo, snumber, issue_name, people, hours):
 		assert(len(people)==len(hours))
 		self.number = float(snumber)
 		self.name   = issue_name.strip()
+		self.repo   = repo
+		self.milestone_id = config.milestones_map[self.repo]
 		
 		self.hours = {}
 		for x in xrange(len(hours)):
@@ -38,12 +40,12 @@ class Issue:
 		# else:
 		# 	self.type = IssueTypes.TASK	
 
-	def send_issue_github(self, father_us):
-		github_issue = dict(title=self.name, milestone=config.milestone)		
+	def send_issue_github(self, father_us):	
+		github_issue = dict(title=self.name, milestone=self.milestone_id)		
 
 		if father_us != None:
 	        	github_issue['labels'] = 'Task'	        	
-        		github_issue['body'] = unicode(u'Number'+str(self.number)+'\n') + unicode(u'User Story: #'+str(father_us)+'\n')
+        		github_issue['body'] = unicode(u'Number: '+str(self.number)+'\n') + unicode(u'User Story: #'+str(father_us)+'\n')
         		if len(self.hours) > 0:
         			for h in self.hours:
         				github_issue['body'] = github_issue['body'] + h+'(@'+config.usernames_map[h]+'): '+str(self.hours[h])+'h\n'
@@ -53,7 +55,9 @@ class Issue:
 	        else:
         		github_issue['labels'] = 'Story'
         
-	        github_issue = github_api.request('/repos/{}/{}/issues'.format(config.owner, config.repo),
+
+        	repo_name = config.repositories_map[self.repo];
+	        github_issue = github_api.request('/repos/{}/{}/issues'.format(config.owner, repo_name),
             	'POST', github_issue, True)
 
 		return github_issue['number']
@@ -61,6 +65,7 @@ class Issue:
 
 	def debug(self):
 		print "Issue: #"+str(self.number)
+		print "Repo: #"+str(self.repo)
 		print "Name:",self.name
 		print "Hours:",self.hours
 
@@ -86,15 +91,18 @@ def extract_issues(filename):
 	us_col = -1
 	number_col = -1
 	tasks_col = -1
+	repo_col = -1
 	people = {} #dict: person -> column
 
 	for c, ic in zip(first_line, range(len(first_line))):
 		if c.lower() == 'us': us_col = ic
 		elif c.lower() == 'number': number_col = ic
 		elif c.lower() == 'tasks': tasks_col = ic
+		elif c.lower() == 'repository': repo_col = ic
 		elif c.strip() != '': people[c.lower()] = ic
 
 	us_issue = None # user story issue
+	repo_key = ''
 	for line in valid_lines:
 		try:
 			issue_number = float(line[number_col])
@@ -114,8 +122,10 @@ def extract_issues(filename):
 					i_hours.append(hour)
 
 			# tries to create an issue
-			# snumber, issue_name, people, hours, us=None):
-			issue = Issue(line[number_col], line[tasks_col], i_people, i_hours)
+			# snumber, issue_name, people, hours, us=None):			
+			if line[us_col] == 'US':				
+				repo_key = line[repo_col];
+			issue = Issue(repo_key, line[number_col], line[tasks_col], i_people, i_hours)
 			print
 			issue.debug()
 
