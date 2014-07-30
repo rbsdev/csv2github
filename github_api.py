@@ -25,6 +25,6 @@ def request(path, method='GET', params=None, debug=False):
     response = requests.request(method, url, data=json.dumps(params))    
 
     if debug: 
-        print("[RESPONSE] " + unicode(response.text))
+        print("[RESPONSE] " + response.text)
 
     return response.json()
