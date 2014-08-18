@@ -141,10 +141,12 @@ def extract_issues(filename):
 
 
 			# now send the issue
-			if line[us_col] == 'US':				
+			if line[us_col].strip() == 'US':				
 				us_issue = issue.send_issue_github('US', None)
-			elif line[us_col] == 'US/TASK':				
+			elif line[us_col].strip() == 'US/TASK':				
 				us_issue = issue.send_issue_github('US/TASK', None)
+			elif line[us_col].strip() == 'NOPE':
+				pass # do nothing
 			else: # task
 				issue.send_issue_github('TASK', us_issue)
 			
