@@ -45,7 +45,7 @@ class Issue:
 		github_issue = dict(title=self.name, milestone=self.milestone_id)		
 
 		if issue_type == 'TASK' and father_us != None:
-			github_issue['labels'] = 'Task'	        	
+			github_issue['labels'] = ['Task']
 			github_issue['body'] = 'User Story: #'+str(father_us)+'\n'
 			if len(self.hours) > 0:
 				for h in self.hours:
@@ -63,7 +63,7 @@ class Issue:
 				for h in self.hours:
 					github_issue['assignee'] = config.usernames_map[h]
 		elif issue_type == 'US':
-			github_issue['labels'] = 'Story'
+			github_issue['labels'] = ['Story']
 		else:
 			print("Type not identified")        
 
@@ -132,7 +132,7 @@ def extract_issues(filename):
 
 			# tries to create an issue
 			# snumber, issue_name, people, hours, us=None):			
-			if line[us_col] == 'US':				
+			if line[us_col] == 'US' or line[us_col] == 'US/TASK':				
 				repo_key = line[repo_col]
 
 			issue = Issue(repo_key, line[number_col], line[tasks_col], i_people, i_hours)
